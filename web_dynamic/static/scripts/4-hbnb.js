@@ -26,7 +26,7 @@ $('button').click(function () {
         const amenityList = Object.keys(amenityDict);
         const data = { amenities: amenityList };
         $.ajax({
-            url: 'http://127.0.0.1:5001/api/v1/places_search',
+            url: 'http://0.0.0.0:5001/api/v1/places_search',
             type: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json',
