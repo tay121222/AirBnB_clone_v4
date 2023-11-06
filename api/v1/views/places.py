@@ -133,19 +133,18 @@ def places_search():
     if data and len(data):
         states = data.get('states', None)
         cities = data.get('cities', None)
-        amenities = data.get('amenities', None)
+        amenity_names = data.get('amenities', None)  # Modified to amenity names
 
     if not data or not len(data) or (
             not states and
             not cities and
-            not amenities):
+            not amenity_names):
         places = storage.all(Place).values()
-        list_places = []
-        for place in places:
-            list_places.append(place.to_dict())
-        return jsonify(list_places)
+        list_places = [place for place in places]
+        return jsonify([place.to_dict() for place in list_places])
 
     list_places = []
+
     if states:
         states_obj = [storage.get(State, s_id) for s_id in states]
         for state in states_obj:
@@ -163,18 +162,13 @@ def places_search():
                     if place not in list_places:
                         list_places.append(place)
 
-    if amenities:
+    if amenity_names:
         if not list_places:
             list_places = storage.all(Place).values()
-        amenities_obj = [storage.get(Amenity, a_id) for a_id in amenities]
-        list_places = [place for place in list_places
-                       if all([am in place.amenities
-                               for am in amenities_obj])]
+        list_places = [place for place in list_places if all(amenity_name in [amenity.name for amenity in place.amenities] for amenity_name in amenity_names)]
 
-    places = []
-    for p in list_places:
-        d = p.to_dict()
-        d.pop('amenities', None)
-        places.append(d)
+    places = [place.to_dict() for place in list_places]
+    for p in places:
+        p.pop('amenities', None)
 
     return jsonify(places)
