@@ -134,6 +134,9 @@ def places_search():
         states = data.get('states', None)
         cities = data.get('cities', None)
         amenity_names = data.get('amenities', None)  # Modified to amenity names
+        print("States:", states)
+        print("Cities:", cities)
+        print("Amenity names:", amenity_names)
 
     if not data or not len(data) or (
             not states and
